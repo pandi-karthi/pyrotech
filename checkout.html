@@ -1,0 +1,361 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Order Summary</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h2 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #888;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: maroon;
+            color: white;
+        }
+        #customerDetails {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f3f3f3;
+            border: 1px solid #aaa;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0;
+        }
+        .btn {
+            padding: 12px 25px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Order Summary</h2>
+
+<div id="summaryContainer"></div>
+
+<div id="customerDetails">
+    <h3>Customer Details</h3>
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="tel" id="phone" placeholder="Phone Number" required>
+    <input type="text" id="address" placeholder="Shipping Address" required>
+</div>
+
+<button class="btn" onclick="downloadPDF()">Download PDF</button>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const items = JSON.parse(localStorage.getItem("orderItems")) || [];
+    const grandTotal = localStorage.getItem("grandTotal") || 0;
+
+    let table = `<table><tr>
+        <th>Product Name</th>
+        <th>Price (40%)</th>
+        <th>Quantity</th>
+        <th>Subtotal</th>
+    </tr>`;
+
+    items.forEach(item => {
+        table += `<tr>
+            <td>${item.name}</td>
+            <td>₹${item.price}</td>
+            <td>${item.quantity}</td>
+            <td>₹${item.subtotal}</td>
+        </tr>`;
+    });
+
+    table += `<tr><td colspan="3"><strong>Grand Total</strong></td><td><strong>₹${grandTotal}</strong></td></tr>`;
+    table += `</table>`;
+
+    document.getElementById("summaryContainer").innerHTML = table;
+});
+
+// PDF Download
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    html2canvas(document.body).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgProps = doc.getImageProperties(imgData);
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        doc.save("Order_Summary.pdf");
+    });
+}
+</script>
+
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crackers Pricelist</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #aa0000;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: maroon;
+            color: white;
+        }
+        .highlight {
+            background-color: #fff176;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            margin-top: 15px;
+            border: none;
+            border-radius: 5px;
+        }
+        #totalBox {
+            text-align: right;
+            font-size: 18px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #orderSummary {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+        #orderSummary table {
+            width: 60%;
+            border-collapse: collapse;
+        }
+        #orderSummary th, #orderSummary td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: center;
+        }
+        #orderSummary th {
+            background-color: #444;
+            color: white;
+        }
+        #customerDetails {
+            width: 35%;
+            border: 1px solid #333;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        #customerDetails input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+        }
+        #orderSummary {
+            display: flex;
+            gap: 0px;
+            align-items: flex-start;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align: center;">ONE SOUND CRACKERS (60% DISCOUNT)</h2>
+
+<div style="display: flex; justify-content: flex-end; align-items: center; gap: 20px; margin-bottom: 15px;">
+    <div id="totalBox">Grand Total: ₹<span id="grandTotal">0</span></div>
+    <button type="button" class="btn" onclick="showOrderSummary()" style="background: none; border: none; padding: 0; cursor: pointer;">
+        <img src="images/download.png" alt="Checkout" title="Proceed to Checkout" width="60">
+    </button>
+</div>
+
+<div id="crackersContainer">
+    <table>
+        <tr>
+            <th>Image</th>
+            <th>Code</th>
+            <th>Product Name</th>
+            <th>Content</th>
+            <th>Actual Price</th>
+            <th>Amount (40%)</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+        <tr>
+            <th colspan="8" style="text-align: center; background-color: maroon; color: white; padding: 20px; font-size: 20px;">
+                ONE SOUND CRACKERS (60% DISCOUNT)
+            </th>
+        </tr>
+
+        <?php
+        $products = [
+            ["img" => "img1.jpg", "code" => 3, "name" => "4'' Lakshmi (10 Pkts)", "content" => "Bundle", "actual" => 380],
+            ["img" => "img2.jpg", "code" => 10, "name" => "4'' Deluxe Hulk / Elephant (10 Pkts)", "content" => "Bundle", "actual" => 540],
+            ["img" => "img3.jpg", "code" => 19, "name" => "3 1/2'' Lakshmi / Ben 10 (10 Pkts)", "content" => "Bundle", "actual" => 260],
+        ];
+
+        foreach ($products as $index => $product) {
+            $discounted = round($product['actual'] * 0.4);
+            echo "<tr class='highlight'>
+                <td><img src='{$product['img']}' width='50'></td>
+                <td>{$product['code']}</td>
+                <td>{$product['name']}</td>
+                <td>{$product['content']}</td>
+                <td><del>₹{$product['actual']}</del></td>
+                <td>₹<span id='price_$index'>{$discounted}</span></td>
+                <td>
+                    <input type='number' min='0' id='qty_$index' oninput='calculateTotal($index)' value='0' />
+                    <input type='hidden' id='name_$index' value=\"{$product['name']}\">
+                </td>
+                <td>₹<span id='total_$index'>0</span></td>
+            </tr>";
+        }
+        ?>
+    </table>
+</div>
+
+<div id="orderSummary"></div>
+
+<script>
+const numProducts = <?= count($products) ?>;
+
+function calculateTotal(index) {
+    const price = parseFloat(document.getElementById('price_' + index).innerText) || 0;
+    const qty   = parseInt(document.getElementById('qty_' + index).value, 10) || 0;
+    const total = price * qty;
+    document.getElementById('total_' + index).innerText = total;
+    updateGrandTotal();
+}
+
+function updateGrandTotal() {
+    let grandTotal = 0;
+    for (let i = 0; i < numProducts; i++) {
+        grandTotal += parseFloat(document.getElementById('total_' + i).innerText) || 0;
+    }
+    document.getElementById('grandTotal').innerText = grandTotal;
+}
+
+function showOrderSummary() {
+    let hasItems   = false;
+    let grandTotal = 0;
+    let summary = `
+      <h2>Order Summary</h2>
+      <table>
+        <tr><th>Product Name</th><th>Price (40%)</th><th>Quantity</th><th>Subtotal</th></tr>`;
+
+    for (let i = 0; i < numProducts; i++) {
+        const qty = parseInt(document.getElementById('qty_' + i).value, 10) || 0;
+        if (qty > 0) {
+            hasItems = true;
+            const name     = document.getElementById('name_' + i).value;
+            const price    = parseFloat(document.getElementById('price_' + i).innerText) || 0;
+            const subtotal = price * qty;
+            grandTotal    += subtotal;
+
+            summary += `
+              <tr>
+                <td>${name}</td>
+                <td>₹${price.toFixed(2)}</td>
+                <td>${qty}</td>
+                <td>₹${subtotal.toFixed(2)}</td>
+              </tr>`;
+        }
+    }
+
+    if (!hasItems) {
+        return alert('⚠️ Please select at least one item before checkout.');
+    }
+
+    summary += `
+      <tr>
+        <td colspan="3" style="text-align: right;"><strong>Grand Total</strong></td>
+        <td><strong>₹${grandTotal.toFixed(2)}</strong></td>
+      </tr>
+      </table>`;
+
+    // Customer form + Place Order button
+    const customerHTML = `
+      <div id="customerDetails">
+        <h3>Customer Details</h3>
+        <input type="text" id="cust_name" placeholder="Full Name" required>
+        <input type="email" id="cust_email" placeholder="Email" required>
+        <input type="tel" id="cust_phone" placeholder="Phone Number" required>
+        <input type="text" id="cust_address" placeholder="Shipping Address" required>
+        <button type="button" onclick="confirmBooking()">Place Order</button>
+      </div>`;
+
+    document.getElementById('orderSummary').innerHTML =
+      `<div style="flex:2;">${summary}</div>${customerHTML}`;
+}
+
+function confirmBooking() {
+    // Get customer details
+    const name = document.getElementById('cust_name').value;
+    const email = document.getElementById('cust_email').value;
+    const phone = document.getElementById('cust_phone').value;
+    const address = document.getElementById('cust_address').value;
+    
+    // Send email notification to owner
+    const ownerEmail = 'owner@example.com'; // Replace with your owner's email address
+    const subject = 'New Order Confirmation';
+    let message = `New Order Details:\n\n`;
+    message += `Customer Name: ${name}\n`;
+    message += `Email: ${email}\n`;
+    message += `Phone: ${phone}\n`;
+    message += `Address: ${address}\n\n`;
+    message += `Order Details:\n`;
+
+    for (let i = 0; i < numProducts; i++) {
+        const qty = parseInt(document.getElementById('qty_' + i).value, 10) || 0;
+        if (qty > 0) {
+            const name = document.getElementById('name_' + i).value;
+            const price = parseFloat(document.getElementById('price_' + i).innerText) || 0;
+            const subtotal = price * qty;
+            message += `${name} - ₹${price.toFixed(2)} x ${qty} = ₹${subtotal.toFixed(2)}\n`;
+        }
+    }
+
+    message += `\nGrand Total: ₹${document.getElementById('grandTotal').innerText}`;
+
+    // Send email
+    const headers = "From: no-reply@example.com"; // Set from email address
+    const sendEmail = `mailto:${ownerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+
+    window.location.href = sendEmail;  // This triggers the email client
+
+    alert('✅ Your booking is confirmed! Thank you for your purchase.');
+}
+</script>
+
+</body>
+</html>
+
